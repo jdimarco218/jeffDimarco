@@ -60,7 +60,7 @@ WSGI_APPLICATION = 'jeffDimarco.wsgi.application'
 
 DATABASES = {
     'default': {
-        database_url.config()
+        dj_database_url.config()
         #'ENGINE': 'django.db.backends.sqlite3',
         #'ENGINE': 'django.db.backends.postgresql_psycopg2',
         #'NAME': 'jddatabase',
