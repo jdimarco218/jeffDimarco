@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+import dj_database_url
 
 
 # Quick-start development settings - unsuitable for production
@@ -57,17 +58,18 @@ WSGI_APPLICATION = 'jeffDimarco.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'jddatabase',
-        'USER': 'jeff',
-        'PASSWORD': 'jeff5333',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
-}
+DATABASES['default'] = dj_database_url.config()
+#DATABASES = {
+#    'default': {
+#        #'ENGINE': 'django.db.backends.sqlite3',
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': 'jddatabase',
+#        'USER': 'jeff',
+#        'PASSWORD': 'jeff5333',
+#        'HOST': '127.0.0.1',
+#        'PORT': '5432',
+#    }
+#}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
