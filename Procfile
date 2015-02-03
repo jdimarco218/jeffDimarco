@@ -1,1 +1,1 @@
-gunicorn jeffDimarco.wsgi --log-file -
+web: gunicorn jeffDimarco.wsgi --log-file -
