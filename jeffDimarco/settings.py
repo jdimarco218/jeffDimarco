@@ -111,6 +111,7 @@ STATIC_ROOT = PROJECT_DIR.parent.child('static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     PROJECT_DIR.child('static'),
+    PROJECT_DIR.child('staticfiles'),
 )
 
 #STATIC_ROOT = 'staticfiles'
