@@ -14,6 +14,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 import dj_database_url
 from unipath import Path
 
+##### FROM TWO SCOOPS #####
+def get_env_variable(var_name):
+    """ Get the environment variable or return exception """
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        error_msg = "Set the %s environment variable" % var_name
+        raise ImproperlyConfigured(error_msg)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -104,6 +113,15 @@ ALLOWED_HOSTS = ['*']
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+#PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+#STATIC_ROOT = os.path.join(PROJECT_ROOT,'staticfiles/')
+# URL prefix for static files.
+# Example: "http://example.com/static/", "http://static.example.com/"
+#STATIC_URL = '/static/'
+#STATICFILES_DIRS = (
+#    PROJECT_ROOT + '/static/',
+#)
+
 #PROJECT_DIR = Path(__file__).parent.parent
 #STATIC_ROOT = PROJECT_DIR.parent.child('static')
 #STATIC_URL = '/static/'
@@ -115,7 +133,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR),
     os.path.join(BASE_DIR, 'static'),
 )
 
