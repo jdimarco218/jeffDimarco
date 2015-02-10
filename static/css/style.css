@@ -13,7 +13,8 @@ html, body {
 body {
   color: #3A3D40;
   font: 400 20px/1.5 "Source Sans Pro", sans-serif;
-  background: #f6f6f6;
+  /* background: #f6f6f6; */
+  background: #00ff00; 
 }
 
 strong {
@@ -21,8 +22,10 @@ strong {
 }
 
 header {
-  background: #728A8B;
-  border-bottom: 1px solid #56696A;
+  /* background: #728A8B; */
+  background: #ff0000;
+  /* border-bottom: 1px solid #56696A; */
+  border-bottom: 1px solid #00ff00;
   width: 100%;
   padding: .4em 0;
   box-shadow: 0 0 5px rgba(0, 0, 0, .6);
@@ -31,11 +34,13 @@ header {
 header h1 {
   font-family: Playball, cursive;
   font-size: 1.8em;
-  text-shadow: 1px 1px 0px #3A3D40;
+  text-shadow: 1px 1px 0px #ff0000;
+  /* text-shadow: 1px 1px 0px #3A3D40; */
 }
 
 header h1 a {
-  color: #E6D9B8;
+  /* color: #E6D9B8; */
+  color: #008800;
   text-decoration: none;
   float: left;
 }

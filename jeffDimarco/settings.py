@@ -49,6 +49,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'polls',
     'core',
+    'rest_framework',
+    'grooveGenerator',
 )
 
 MIDDLEWARE_CLASSES = (
