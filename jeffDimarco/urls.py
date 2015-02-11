@@ -7,8 +7,11 @@ urlpatterns = patterns('',
     url(r'^$', 'core.views.home', name="home"),
 
     url(r'^grooveGenerator/', include('grooveGenerator.urls', namespace="grooveGenerator")),
+    url(r'^blog/', include('blog.urls', namespace="blog")),
     url(r'^polls/', include('polls.urls', namespace="polls")),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^posts/', include('posts.urls')), 
+    url(r'^tags/', include('tags.urls')),
 )
 
 urlpatterns += patterns('',

@@ -51,6 +51,9 @@ INSTALLED_APPS = (
     'core',
     'rest_framework',
     'grooveGenerator',
+    'blog',
+    'tags',
+    'posts',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -72,18 +75,18 @@ WSGI_APPLICATION = 'jeffDimarco.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {}
-DATABASES['default'] =  dj_database_url.config()
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': 'jddatabase',
-#        'USER': 'jeff',
-#        'PASSWORD': 'jeff5333',
-#        'HOST': '127.0.0.1',
-#        'PORT': '5432',
-#    }
-#}
+#DATABASES['default'] =  dj_database_url.config()
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'jddatabase',
+        'USER': 'jeff',
+        'PASSWORD': 'jeff5333',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -115,23 +118,6 @@ ALLOWED_HOSTS = ['*']
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-#PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-#STATIC_ROOT = os.path.join(PROJECT_ROOT,'staticfiles/')
-# URL prefix for static files.
-# Example: "http://example.com/static/", "http://static.example.com/"
-#STATIC_URL = '/static/'
-#STATICFILES_DIRS = (
-#    PROJECT_ROOT + '/static/',
-#)
-
-#PROJECT_DIR = Path(__file__).parent.parent
-#STATIC_ROOT = PROJECT_DIR.parent.child('static')
-#STATIC_URL = '/static/'
-#STATICFILES_DIRS = (
-#    PROJECT_DIR.child('static'),
-#    PROJECT_DIR.parent.child('staticfiles'),
-#)
-
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
@@ -140,3 +126,20 @@ STATICFILES_DIRS = (
 )
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+#rest framework settings
+REST_FRAMEWORK = {
+    # Use hyperlinked styles by default.
+    # Only used if the `serializer_class` attribute is not set on a view.
+    'DEFAULT_MODEL_SERIALIZER_CLASS':
+        'rest_framework.serializers.HyperlinkedModelSerializer',
+
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        #'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
