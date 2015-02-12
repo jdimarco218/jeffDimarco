@@ -6,7 +6,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', 'core.views.home', name="home"),
 
-    url(r'^grooveGenerator/', include('grooveGenerator.urls', namespace="grooveGenerator")),
+    #url(r'^grooveGenerator/', include('grooveGenerator.urls', namespace="grooveGenerator")),
+    (r'^grooveGenerator/', include('grooveGenerator.urls')),
     url(r'^blog/', include('blog.urls', namespace="blog")),
     url(r'^polls/', include('polls.urls', namespace="polls")),
     url(r'^admin/', include(admin.site.urls)),

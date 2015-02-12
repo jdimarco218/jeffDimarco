@@ -1,64 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>{% block title %}jeffDimarco{% endblock %}</title>
-  <link href="{{ STATIC_URL }}css/style.css" rel="stylesheet" media="screen">
-  {% block head_extra %}
-  {% endblock head_extra %}
-</head>
-<body>
-  <div class="page-wrapper">
-    <header>
-      <div class="wrapper clearfix">
-        <h1><a href="/">jeffDimarco</a></h1>
-        <nav>
-          <!--a href="/explore/">Explore</a-->
-          <a href="/blog/">Blog</a>
-          <a href="/about/">About</a>
-          <a href="/support/">Support</a>
-        </nav>
-        {% if user.is_authenticated %}
-          <nav class="signedin">
-            <a href="/{{ user.username }}/" class="user">{{ user.username }}</a>
-            <a href="/settings/">Account Settings</a>
-            <a href="/signout/">Sign Out</a>
-          </nav>
-        {% else %}
-          <div class="signin">
-            <a href="/signup/" class="btn btn-success" style="text-decoration: none">Sign up</a>
-            <a href="/signin/" class="btn" style="text-decoration: none">Log in</a>
-          </div>
-        {% endif %}
-      </div>
-    </header>
-    <section class="content">
-      <div class="wrapper clearfix">
-        {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-              <a href="#" class="pull-right" onclick="$(this).closest('div').fadeOut(); return false;">×</a>
-              {{ message }}
-            </div>
-          {% endfor %}
-        {% endif %}
-        {% block content %}
-        {% endblock content %}
-      </div>
-    </section>
-    {% block footer %}
-    {% endblock footer %}
-    <div class="push"></div>
-  </div>
-  <footer>
-    <div class="wrapper clearfix">
-      <p>© 2014 LOLZ Ltd.</p>
-      <ul>
-        <li><a href="#">Terms of Use</a></li>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Cookie Policy</a></li>
-      </ul>
-    </div>
-  </footer>
-</body>
-</html>
+{% extends "general.html" %}
+{% block extra_head %}{% endblock %}
+{% block site_wrapper %}
+	{% include 'tags/header.html'%}
+	<!-- end #menu -->	
+	{% block content %}
+	{% endblock %}	
+	{% block extra_content %}		
+	{% endblock %}		
+	{% include 'tags/footer.html'%}		
+				
+	{% block extra_page %}		
+	<!-- userrules -->
+	<!-- Mixpanel -->
+	<!-- Google Analytics -->
+	<!-- kissinsights / qualaroo - Disabled 1/14 per James' request-->
+	<!-- CrazyEgg -->
+	<!-- Begin Inspectlet Embed Code -->
+	<!-- kissmetrics -->
+	{% endblock %}
+{% endblock %}
