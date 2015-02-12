@@ -1,6 +1,6 @@
+from django.shortcuts import render_to_response
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.shortcuts import redirect
 from django.views.generic import ListView
 from grooveGenerator.models import Color
 
@@ -34,14 +34,30 @@ class ColorList(ListView):
         context = super(ColorList, self).get_context_data(**kwargs)
  
         global  MIN_SEARCH_CHARS
-
+ 
         search_text = ""   #Assume no search
         if(self.request.method == "GET"):
             """
             The search form has been submitted. Get the search text from
             it. If it's less than MIN_SEARCH_CHARS characters, ignore the
             request.
+ 
             Must be GET, not post.
+            - http://stackoverflow.com/questions/25878993/django-view-works-with-default-call-but-form-submission-to-same-view-only-calls
+ 
+            Also, must use
+ 
+                if(self.request.method == "GET")
+ 
+            not
+ 
+                if(self.request.GET)
+ 
+https://docs.djangoproject.com/en/1.7/ref/request-response/#django.http.HttpRequest.method
+ 
+ 
+https://docs.djangoproject.com/en/1.7/ref/request-response/#django.http.HttpRequest.POST
+ 
             """
             search_text = self.request.GET.get("search_text", "").strip().lower()
             if(len(search_text) < MIN_SEARCH_CHARS):
@@ -65,6 +81,7 @@ class ColorList(ListView):
  
         return  context
  
+ 
 def toggle_color_like(request, color_id):
     """Toggle "like" for a single color, then refresh the color-list page."""
     color = None
@@ -75,14 +92,17 @@ def toggle_color_like(request, color_id):
     except Color.DoesNotExist as e:
         raise  ValueError("Unknown color.id=" + str(color_id) + ". Original error: " + str(e))
  
-    #print("pre-toggle:  color_id=" + str(color_id) + ", color.is_favorited=" + str(color.is_favorited) + "")
+    print("pre-toggle:  color_id=" + str(color_id) + ", color.is_favorited=" + str(color.is_favorited) + "")
  
     color.is_favorited = not color.is_favorited
     color.save()  #Commit the change to the database
  
-    #print("post-toggle: color_id=" + str(color_id) + ", color.is_favorited=" + str(color.is_favorited) + "")
+    print("post-toggle: color_id=" + str(color_id) + ", color.is_favorited=" + str(color.is_favorited) + "")
  
-    return  redirect("grooveGenerator")  #See urls.py
+    #return  redirect("grooveGenerator")  #See urls.py
+    #Render the just-clicked-on like-button.
+    return  render_to_response("grooveGenerator/color_like_link__html_snippet.txt",
+                               {"color": color})
 
 #def grooveGenerator(request):
 #    return HttpResponse("grooveGenerator says hey there world!")

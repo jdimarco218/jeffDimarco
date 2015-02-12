@@ -1,56 +1,21 @@
 {% comment %}
-   humanize: For the "apnumber" filter, to display "two" instead of
-   "2". Requries 'django.contrib.humanize' in INSTALLED_APPS
+   humanize:
+      For the "apnumber" filter, to display "two" instead of
+      "2". Requries 'django.contrib.humanize' in INSTALLED_APPS
+ 
+   static:
+      To access the public static file directory, without having to hard
+      code urls.
 {% endcomment %}
 {% load humanize %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
    <head>
       <title>Color Likenatorizer</title>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
       <meta name="viewport" content="width=device-width"/>
-      <style type="text/css">
-         .search_section  {
-            float: left;
-         }
-         .content_section  {
-            float: left;
-         }
-         table  {
-            border:1px solid #000;
-            border-spacing: 0px;
-            background-color: #EEE;
-            border-collapse:collapse;
-         }
-         thead  {
-            font-weight: bold;
-            text-decoration: underline;
-         }
-         th  {
-            border:1px solid #000;
-            padding: 4px;
-         }
-         td  {
-            text-align: center;
-            vertical-align: middle;
-            padding: 4px;
-            border:1px solid #000;
-         }
-         .td__color_color  {
-            text-align: right;
-         }
-         .td__color_name  {
-            text-align: left;
-         }
-         .liked  {
-            text-align: center;
-            background-color: #CD0;
-         }
-         .unliked  {
-            text-align: center;
-            background-color: white;
-         }
-      </style>
+      <link rel="stylesheet" type="text/css" href="{% static 'stylesheet.css' %}">
    </head>
 <body>
    <div class="search_section">
@@ -86,20 +51,63 @@
                <th colspan="2">Color</th>
                <th>Favorite?</th>
             </tr>
+               <!--
+                  The yes/no like button is contained in the third column.
+                  The stylesheet eliminates the button's border and expands
+                  its width and height to 100%, so it fills its entire
+                  container: the table cell. It therefore appears to *be*
+                  the table cell.
+ 
+                  The table cell is in this main template, the button in
+                  it, is in the "include"d sub-template. The button
+                  sub-template is used by the below for-loop, and also by
+                  the toggle_color_like view, which is called by Ajax.
+ 
+                  Ajax calls Django, which renders the sub-template and
+                  feeds it back to Ajax, which then replaces the current
+                  button/sub-template with the new one.
+ 
+                  (The data-color_id is how the id is passed to JQuery. See
+                  http://api.jquery.com/data/ )
+               -->
             {% for  color in colors %} {# No colon after "colors" #}
                <tr>
-                  <td style="background-color: {{ color.name }};" class="td__color_color"
-                     >{{ color.name }}</td>
+                  <td style="background-color: {{ color.name }};" class="td__color_color">{{ color.name }}</td>
                   <td class="td__color_name">{{ color.name }}</td>
-                  <td class="{% if not color.is_favorited %}un{% endif %}liked"
-                     ><a href="{% url 'toggle_color_like' color.id %}"
-                     >{% if color.is_favorited %}Yes{% else %}No{% endif %}</a></td>
+                  <td id="toggle_color_like_cell_{{ color.id }}" class="td__toggle_color_like_button" data-color_id="{{ color.id }}">
+                     {% include "grooveGenerator/color_like_link__html_snippet.txt" %}
+                  </td>
                </tr>
             {% endfor %}
          </table>
       {% endif %}
    </div>
+   <script type='text/javascript' src="{% static 'jquery-1.11.1.min.js' %}"></script>
+   <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
    <script language="javascript">
-      document.getElementById("search_text").focus();
+      /*
+         Before our JavaScript can be imported, the following JavaScript
+         variables need to be set from Django variables. While these
+         values could be hard-coded into the JavaScript, this allows
+         them to be centrally located.
+      */
+      //From color_liker.views.MIN_SEARCH_CHARS
+      var MIN_SEARCH_CHARS = {{ MIN_SEARCH_CHARS }};
+ 
+      //The url to submit the search form. From color_liker.urls
+      var SUBMIT_URL = "{% url 'grooveGenerator' %}";
+ 
+      /*
+         the url to toggle the like. From color_liker.urls
+ 
+         Since an id must be provided to the Django url, give it a
+         bogus one, then immediately lop it off (along with the
+         ending '/'). It is re-appended by the JavaScript.
+      */
+      var LIKE_URL_PRE_ID = "{% url 'toggle_color_like' color_id='999999999' %}"
+      LIKE_URL_PRE_ID = LIKE_URL_PRE_ID.substring(0, LIKE_URL_PRE_ID.length - "999999999/".length);
    </script>
+   <script type='text/javascript' src="{% static 'color_ajax_search.js' %}"></script>
+   <script type='text/javascript' src="{% static 'color_ajax_like.js' %}"></script>
+   <script type='text/javascript' src="{% static 'color_ajax_main.js' %}"></script>
 </body></html>
