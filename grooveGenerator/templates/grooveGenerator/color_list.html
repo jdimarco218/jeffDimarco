@@ -82,6 +82,22 @@
          </table>
       {% endif %}
    </div>
+   <div class="generate_melody">
+      <form id="key_text_form_id" method="get" action="{% url 'grooveGenerator' %}">
+         <input type="text" id="key_text" name="key_text"/>
+         {# csrf_token is not needed when the method is "get" #}
+         <input id="enter_key_button" type="submit" value="Enter key"/>
+         <p>(Test string jajaja!)</p>
+      </form>
+   </div>
+   <script>
+       var context = new webkitAudioContext(),
+           oscillator = context.createOscillator();
+
+       oscillator.connect(context.destination);
+       //oscillator.noteOn(0);
+   </script>
+
    <script type='text/javascript' src="{% static 'jquery-1.11.1.min.js' %}"></script>
    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
    <script language="javascript">
@@ -107,6 +123,13 @@
       var LIKE_URL_PRE_ID = "{% url 'toggle_color_like' color_id='999999999' %}"
       LIKE_URL_PRE_ID = LIKE_URL_PRE_ID.substring(0, LIKE_URL_PRE_ID.length - "999999999/".length);
    </script>
+
+   <script>
+       var playImage = "{% static 'img/play.png' %}";
+       var stopImage = "{% static 'img/stop.png' %}";
+   </script>
+   <input type="image" src= "{% static 'img/play.png' %}" value="play" class ="off" id="audio_toggle_button" />
+   <script type='text/javascript' src="{% static 'js/web_audio.js' %}"></script>
    <script type='text/javascript' src="{% static 'color_ajax_search.js' %}"></script>
    <script type='text/javascript' src="{% static 'color_ajax_like.js' %}"></script>
    <script type='text/javascript' src="{% static 'color_ajax_main.js' %}"></script>

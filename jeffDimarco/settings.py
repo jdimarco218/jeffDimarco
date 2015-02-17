@@ -76,18 +76,18 @@ WSGI_APPLICATION = 'jeffDimarco.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {}
-DATABASES['default'] =  dj_database_url.config()
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': 'jddatabase',
-#        'USER': 'jeff',
-#        'PASSWORD': 'jeff5333',
-#        'HOST': '127.0.0.1',
-#        'PORT': '5432',
-#    }
-#}
+#DATABASES['default'] =  dj_database_url.config()
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'jddatabase',
+        'USER': 'jeff',
+        'PASSWORD': 'jeff5333',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
