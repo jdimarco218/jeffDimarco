@@ -1,0 +1,11 @@
+#!/usr/bin/env python
+
+from Groove import *
+
+g1 = Groove()
+g1.genMelody()
+g1.printGroove()
+
+#for note in g1.melody.phraseList[0].noteList:
+#    print str(note.noteVal) + " ",
+#print ""
