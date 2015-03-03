@@ -1,11 +1,44 @@
 #!/usr/bin/env python
 
+import os
 from Groove import *
 
-g1 = Groove()
-g1.genMelody()
-g1.printGroove()
+myGroove = Groove()
 
-#for note in g1.melody.phraseList[0].noteList:
-#    print str(note.noteVal) + " ",
-#print ""
+myGroove.genMelody()
+
+myGroove.printGroove()
+
+# Create bash script to play tune
+noteString = ""
+for phrase in myGroove.melody.phraseList:
+    for note in phrase.noteList:
+        if note.noteVal == 0:
+            noteString += "C"
+        if note.noteVal == 1:
+            noteString += "D"
+        if note.noteVal == 2:
+            noteString += "E"
+        if note.noteVal == 3:
+            noteString += "F"
+        if note.noteVal == 4:
+            noteString += "G"
+        if note.noteVal == 5:
+            noteString += "A"
+        if note.noteVal == 6:
+            noteString += "B"
+        if note.noteVal == 7:
+            noteString += "C"
+        noteString += str(note.octave)
+        noteString += ","
+noteString = noteString[:len(noteString)-1] # remove final comma
+dirPath = os.path.dirname(os.path.realpath(__file__))
+resultsFile = dirPath + "/results.sh"
+
+file1 = open(resultsFile, 'w')
+file1.write("#!/bin/bash\nfor i in {" + noteString + "};do play -qn synth 2 pluck $i& sleep .25; done")
+
+
+#print "noteString: " + noteString
+
+
