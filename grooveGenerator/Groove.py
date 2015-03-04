@@ -9,9 +9,29 @@ class Groove(object):
     " Attributes:
     "     TODO
     """
+    
+    # number of steps skipped for this note on the scale
+    scaleSteps = [0, 1, 2, 2, 3, 4, 5, 5]
+    # whole, whole, half, whole, whole, whole, half
+
+    allNotesList = ["C0","CsDf0","D0","DsEf0","E0","F0","FsGf0","G0","GsAf0","A0","AsBf0","B0",
+                    "C1","CsDf1","D1","DsEf1","E1","F1","FsGf1","G1","GsAf1","A1","AsBf1","B1",
+                    "C2","CsDf2","D2","DsEf2","E2","F2","FsGf2","G2","GsAf2","A2","AsBf2","B2",
+                    "C3","CsDf3","D3","DsEf3","E3","F3","FsGf3","G3","GsAf3","A3","AsBf3","B3",
+                    "C4","CsDf4","D4","DsEf4","E4","F4","FsGf4","G4","GsAf4","A4","AsBf4","B4",
+                    "C5","CsDf5","D5","DsEf5","E5","F5","FsGf5","G5","GsAf5","A5","AsBf5","B5",
+                    "C6","CsDf6","D6","DsEf6","E6","F6","FsGf6","G6","GsAf6","A6","AsBf6","B6",
+                    "C7","CsDf7","D7","DsEf7","E7","F7","FsGf7","G7","GsAf7","A7","AsBf7","B7",
+                    "C8"]
+
+    allFreqsList = ["%-48", "%-47", "%-46", "%-45", "%-44", "%-43", "%-42", "%-41", "%-40", "%-39", "%-38", "%-37", "%-36", "%-35", "%-34", "%-33", "%-32", "%-31", "%-30", "%-29", "%-28", "%-27", "%-26", "%-25", "%-24", "%-23", "%-22", "%-21", "%-20", "%-19", "%-18", "%-17", "%-16", "%-15", "%-14", "%-13", "%-12", "%-11", "%-10", "%-9", "%-8", "%-7", "%-6", "%-5", "%-4", "%-3", "%-2", "%-1","%+0", "%+1", "%+2", "%+3", "%+4", "%+5", "%+6", "%+7", "%+8", "%+9", "%+10", "%+11", "%+12", "%+13", "%+14", "%+15", "%+16", "%+17", "%+18", "%+19", "%+20", "%+21", "%+22", "%+23", "%+24", "%+25", "%+26", "%+27", "%+28", "%+29", "%+30", "%+31", "%+32", "%+33", "%+34", "%+35", "%+36", "%+37", "%+38", "%+39", "%+40", "%+41", "%+42", "%+43", "%+44", "%+45", "%+46", "%+47", "%+48"]
+
+    allNotesFreqsDict = {}
 
     def __init__(self):
         """ TODO """
+        for i in range(len(self.allNotesList)):
+            self.allNotesFreqsDict[self.allNotesList[i]] = self.allFreqsList[i]
         self.key = "C"
         self.bpm = 80
         self.range = 2
@@ -103,7 +123,7 @@ class Melody(object):
         """ Generate a range one octave down and up """
         baseWeightOffset = 3 # Used to normalize weights across types
         baseDistanceOffset = 2
-        baseDistanceFactor = 1.25
+        baseDistanceFactor = 3.25
         rangeFloor = 0
         rangeCeil  = 17 # Two octaves plus current note
         if currNote.octave == 0:

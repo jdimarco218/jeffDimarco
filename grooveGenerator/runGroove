@@ -4,6 +4,7 @@ import os
 from Groove import *
 
 myGroove = Groove()
+myGroove.key = "D"
 
 myGroove.genMelody()
 
@@ -11,26 +12,31 @@ myGroove.printGroove()
 
 # Create bash script to play tune
 noteString = ""
+currList = []
 for phrase in myGroove.melody.phraseList:
     for note in phrase.noteList:
-        if note.noteVal == 0:
-            noteString += "C"
-        if note.noteVal == 1:
-            noteString += "D"
-        if note.noteVal == 2:
-            noteString += "E"
-        if note.noteVal == 3:
-            noteString += "F"
-        if note.noteVal == 4:
-            noteString += "G"
-        if note.noteVal == 5:
-            noteString += "A"
-        if note.noteVal == 6:
-            noteString += "B"
-        if note.noteVal == 7:
-            noteString += "C"
-        noteString += str(note.octave)
-        noteString += ","
+        keyOffset = 0
+        if myGroove.key == "C":
+            keyOffset = 0
+        if myGroove.key == "D":
+            keyOffset = 1
+        if myGroove.key == "E":
+            keyOffset = 2
+        if myGroove.key == "F":
+            keyOffset = 3
+        if myGroove.key == "G":
+            keyOffset = 4
+        if myGroove.key == "A":
+            keyOffset = 5
+        if myGroove.key == "B":
+            keyOffset = 6
+        currList.append(keyOffset + note.octave*12+note.noteVal+Groove.scaleSteps[note.noteVal])
+        print "Adding: " + str(keyOffset + note.octave*12+Groove.scaleSteps[note.noteVal])
+        #noteString += str(note.octave)
+        #noteString += ","
+for i in range(len(currList)):
+    noteString += str(myGroove.allNotesFreqsDict[myGroove.allNotesList[currList[i]]])
+    noteString += ","
 noteString = noteString[:len(noteString)-1] # remove final comma
 dirPath = os.path.dirname(os.path.realpath(__file__))
 resultsFile = dirPath + "/results.sh"

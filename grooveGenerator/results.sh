@@ -1,2 +1,2 @@
 #!/bin/bash
-for i in {C4,C3,B2,D3,A3,D4,B4,B3,C4,A4,G5,C5,C4,G4,E4,C4,C4,G4,C4,F5,E5,E6,B5,C5,C4,G3,B3,C3,A3,B2,C2,G2};do play -qn synth 2 pluck $i& sleep .25; done
+for i in {%+1,%+5,%+1,%+0,%+1,%+6,%+5,%+13,%+1,%+0,%-6,%-11,%-6,%-9,%-4,%-11,%+1,%+8,%+13,%+24,%+17,%+15,%+13,%+13,%+1,%+13,%+10,%+0,%-4,%-7,%-11,%-9};do play -qn synth 2 pluck $i& sleep .25; done
