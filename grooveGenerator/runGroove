@@ -4,7 +4,7 @@ import os
 from Groove import *
 
 myGroove = Groove()
-myGroove.key = "D"
+myGroove.key = "G"
 
 myGroove.genMelody()
 
