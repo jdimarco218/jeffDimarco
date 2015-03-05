@@ -222,6 +222,7 @@
 //    'C8': 4186.01
 //};
 
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
 // create the audio context
 var ac = typeof AudioContext !== 'undefined' ? new AudioContext : new webkitAudioContext,
   // get the current Web Audio timestamp (this is when playback should begin)
@@ -354,6 +355,7 @@ sequence3.treble.frequency.value = 1400;
 
 // play
 document.querySelector('#playGroove').addEventListener('click', function() {
+  window.alert("Play pushed!");
   when = ac.currentTime;
   //start the lead part immediately
   sequence1.play( when );
@@ -365,6 +367,7 @@ document.querySelector('#playGroove').addEventListener('click', function() {
 
 // pause
 document.querySelector('#stopGroove').addEventListener('click', function() {
+  window.alert("Stop pushed!");
   sequence1.stop();
   sequence2.stop();
   sequence3.stop();
