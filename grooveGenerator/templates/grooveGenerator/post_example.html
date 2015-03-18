@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<script src="{{ STATIC_URL }}js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#post").click(function(e) {
+        e.preventDefault();
+        var data = {
+            'foo': 'bar'
+        }
+
+        $.ajax({
+            "type": "POST",
+            "dataType": "json",
+            "url": "/test/",
+            "data": data,
+            "success": function(result) {
+                console.log(result);
+            },
+        });
+    });
+});
+</script>
+<body>
+    <h1>PostExample</h1>
+    <p><a href="" id="post">Post Request</a></p>
+</body>
+</html>

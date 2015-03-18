@@ -8,6 +8,8 @@ urlpatterns = patterns('',
 
     #url(r'^grooveGenerator/', include('grooveGenerator.urls', namespace="grooveGenerator")),
     (r'^grooveGenerator/', include('grooveGenerator.urls')),
+    url(r'^ajaxexample/', include('myAjaxTest.urls')),
+    url(r'^mytest/', include('mytest.urls')),
     url(r'^blog/', include('blog.urls', namespace="blog")),
     url(r'^polls/', include('polls.urls', namespace="polls")),
     url(r'^admin/', include(admin.site.urls)),

@@ -1,8 +1,12 @@
+import json
+import socket
 from django.shortcuts import render_to_response
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
+from django.template import Template, Context, RequestContext
 from grooveGenerator.models import Color
+from grooveGenerator.Groove import *
 
 MIN_SEARCH_CHARS = 2
 """
@@ -10,6 +14,7 @@ The minimum number of characters required in a search. If there are less,
 the form submission is ignored. This value is used by the below view and
 the template.
 """
+
 class ColorList(ListView):
     """
     Displays all colors in a table with only two columns: the name of the
@@ -17,6 +22,7 @@ class ColorList(ListView):
     """
     model = Color
     context_object_name = "colors"
+
  
     def dispatch(self, request, *args, **kwargs):
         self.request = request     #So get_context_data can access it.
@@ -104,5 +110,70 @@ def toggle_color_like(request, color_id):
     return  render_to_response("grooveGenerator/color_like_link__html_snippet.txt",
                                {"color": color})
 
-#def grooveGenerator(request):
-#    return HttpResponse("grooveGenerator says hey there world!")
+def ajax1(request):
+   if request.POST.has_key('client_response'):
+       
+        #x = request.POST['client_response']
+        #y = socket.gethostbyname(x)
+        #response_dict = {}
+        #response_dict.update({'server_response': y }) 
+        #return HttpResponse(json.dumps(response_dict), content_type='application/json') 
+        myGroove = Groove(request.POST['client_response'])
+        #myGroove.key = request.POST['client_response']
+        myGroove.genMelody()
+        currList = []
+        for phrase in myGroove.melody.phraseList:
+            for note in phrase.noteList:
+                keyOffset = 0
+                if myGroove.key == "C":
+                    keyOffset = 0
+                if myGroove.key == "D":
+                    keyOffset = 2
+                if myGroove.key == "E":
+                    keyOffset = 4
+                if myGroove.key == "F":
+                    keyOffset = 5
+                if myGroove.key == "G":
+                    keyOffset = 7
+                if myGroove.key == "A":
+                    keyOffset = 9
+                if myGroove.key == "B":
+                    keyOffset = 11
+                currList.append(keyOffset + note.octave*12+note.noteVal+Groove.scaleSteps[note.noteVal])
+        currBassList = []
+        for phrase in myGroove.melody.phraseList:
+            for note in phrase.underlyingList:
+                keyOffset = 0
+                # Use proper key offsets
+                if myGroove.key == "C":
+                    keyOffset = 0
+                if myGroove.key == "D":
+                    keyOffset = 2
+                if myGroove.key == "E":
+                    keyOffset = 4
+                if myGroove.key == "F":
+                    keyOffset = 5
+                if myGroove.key == "G":
+                    keyOffset = 7
+                if myGroove.key == "A":
+                    keyOffset = 9
+                if myGroove.key == "B":
+                    keyOffset = 11
+                currBassList.append(keyOffset + note.octave*12+note.noteVal+Groove.scaleSteps[note.noteVal])
+                #print "Adding: " + str(keyOffset + note.octave*12+Groove.scaleSteps[note.noteVal])
+        response_dict = {}
+        genList = []
+        genBassList = []
+        for i in range(len(currList)):
+            genList.append(str(myGroove.allTMNotesList[currList[i]]) + " e") 
+        for i in range(len(currBassList)):
+            genBassList.append(str(myGroove.allTMNotesList[currBassList[i]]) + " w") 
+        #response_dict.update({'server_response_lead': ['lolz', 'lulz'] })
+        #response_dict.update({'server_response_lead': genList})
+        response_dict.update({'server_response_lead': genList, 'server_response_bass': genBassList })
+        return HttpResponse(json.dumps(response_dict), content_type='application/json') 
+        
+   else:
+        return Http404("IDKYET LOL")
+
+

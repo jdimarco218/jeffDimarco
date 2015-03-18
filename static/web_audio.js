@@ -221,6 +221,55 @@
 //    'B7': 3951.07,
 //    'C8': 4186.01
 //};
+//window.AudioContext = window.AudioContext || window.webkitAudioContext;
+//var ac = typeof AudioContext !== 'undefined' ? new AUdioCOntext : new webkitAudioContex;
+function playNoteList(noteList, noteListBass) {
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    // create the audio context
+    var ac = typeof AudioContext !== 'undefined' ? new AudioContext : new webkitAudioContext,
+    //ac = typeof AudioContext !== 'undefined' ? new AudioContext : new webkitAudioContext,
+      // get the current Web Audio timestamp (this is when playback should begin)
+      when = ac.currentTime,
+      // set the tempo
+      tempo = 132,
+      // initialize some vars
+      sequence1;
+      sequence2;
+      // create an array of "note strings" that can be passed to a sequence
+    
+    //sequence1.waveType = 'sine';
+    //sequence2.waveType = 'sine';
+    // create 3 new sequences (one for lead, one for harmony, one for bass)
+    sequence1 = new Sequence( ac, tempo, noteList );
+    sequence2 = new Sequence( ac, tempo, noteListBass );
+    
+    // set staccato and smoothing values for maximum coolness
+    sequence1.staccato = 0.55;
+    sequence2.staccato = 0.05;
+    sequence2.smoothing = 0.4;
+    
+    // adjust the levels so the bass and harmony aren't too loud
+    sequence1.gain.gain.value = 1.0;
+    sequence2.gain.gain.value = 0.25;
+    
+    // apply EQ settings
+    sequence1.mid.frequency.value = 800;
+    sequence1.mid.gain.value = 3;
+    sequence2.mid.gain.value = 0.2;
+    sequence2.bass.gain.value = 6;
+    sequence2.bass.frequency.value = 80;
+    sequence2.mid.gain.value = 0.2;
+    sequence2.mid.frequency.value = 500;
+    sequence2.treble.gain.value = 0.2;
+    sequence2.treble.frequency.value = 1400;
+
+    sequence1.loop = false;
+    sequence1.play( when );
+    sequence2.loop = false;
+    sequence2.play( when );
+    //useless delete lolz
+    delete ac;
+}
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 // create the audio context
