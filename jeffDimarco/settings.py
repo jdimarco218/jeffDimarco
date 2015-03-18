@@ -51,8 +51,6 @@ INSTALLED_APPS = (
     'polls',
     'core',
     'grooveGenerator',
-    'mytest',
-    'myAjaxTest',
     'blog',
     'tags',
     'posts',
