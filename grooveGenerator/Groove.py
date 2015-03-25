@@ -174,12 +174,14 @@ class Melody(object):
         baseWeightOffset = 3 # Used to normalize weights across types
         baseDistanceOffset = 2
         baseDistanceFactor = 3.25
+        proximityWeightOffset = 10
+        proximityWeightFactor = 1.8 
         rangeFloor = 0
         rangeCeil  = 17 # Two octaves plus current note
         if currNote.octave == 0:
             rangeFloor = 8 - currNote.noteVal # skip that many notes off the bottom
-        if currNote.octave == 7:
-            rangeCeil = 17 - currNote.noteVal # skip that many notes off the bottom
+        if currNote.octave >= 6:
+            rangeCeil = 17 - currNote.noteVal - 12*(abs(6-currNote.octave)) # skip that many notes off the top
 
         for i in range(rangeFloor, rangeCeil):
 
@@ -188,7 +190,7 @@ class Melody(object):
             nextOctave = currNote.octave
             if (currNote.noteVal - 8 + i) < 0:
                 nextOctave = currNote.octave - 1
-            elif (currNote.noteVal - 8 + i) > 8:
+            elif (currNote.noteVal - 8 + i) >= 8:
                 nextOctave = currNote.octave + 1
 
             """ Weight equal to number of steps difference """
@@ -208,7 +210,10 @@ class Melody(object):
             else: 
                 nextScaleWeight = baseWeightOffset
 
-            weights[i] = [Note(nextNoteVal, nextOctave), nextDistanceWeight + nextScaleWeight] 
+            """ Weigh closer to the root slightly higher """
+            nextProximityWeight = proximityWeightOffset - proximityWeightFactor * (abs(nextOctave - 4)) # 4 is root octave
+
+            weights[i] = [Note(nextNoteVal, nextOctave), nextDistanceWeight + nextScaleWeight + nextProximityWeight] 
 
 class Phrase(object):
     """

@@ -2,9 +2,9 @@
 import os
 from Groove import *
 
-myGroove = Groove("E")
+myGroove = Groove("D")
 #myGroove.key = "G"
-
+print "Starting gen..."
 myGroove.genMelody()
 
 myGroove.printGroove()
