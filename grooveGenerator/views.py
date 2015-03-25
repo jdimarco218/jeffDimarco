@@ -145,7 +145,7 @@ def ajax1(request):
                 #for i in range(len(currList)):
                 genList.append(str(myGroove.allTMNotesList[currList[-1]]) + " " + durationMapToStr[note.duration]) 
         # TODO Currently finishes on root note
-        genList.append(str(myGroove.allTMNotesList[currList[0]]) + " q") 
+        genList.append(str(myGroove.allTMNotesList[currList[0]]) + " h") 
         currBassList = []
         for phrase in myGroove.melody.phraseList:
             for note in phrase.underlyingList:
@@ -174,7 +174,7 @@ def ajax1(request):
         for i in range(len(currBassList)):
             genBassList.append(str(myGroove.allTMNotesList[currBassList[i]]) + " w") 
         # TODO Currently finishes on root note
-        genBassList.append(str(myGroove.allTMNotesList[currBassList[0]]) + " q") 
+        genBassList.append(str(myGroove.allTMNotesList[currBassList[0]]) + " h") 
         #response_dict.update({'server_response_lead': ['lolz', 'lulz'] })
         #response_dict.update({'server_response_lead': genList})
         response_dict.update({'server_response_lead': genList, 'server_response_bass': genBassList })
