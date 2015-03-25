@@ -29,13 +29,13 @@ function playNoteList(ac, sequence1, sequence2, noteList, noteListBass) {
     sequence2.smoothing = 0.4;
     
     // adjust the levels so the bass and harmony aren't too loud
-    sequence1.gain.gain.value = 0.6;
-    sequence2.gain.gain.value = 0.5;
+    sequence1.gain.gain.value = 0.5;
+    sequence2.gain.gain.value = 0.3;
     
     // apply EQ settings
-    sequence1.treble.frequency.value = 220;
+    sequence1.treble.frequency.value = 200;
     sequence1.treble.gain.value = 0.8;
-    sequence1.mid.frequency.value = 220;
+    sequence1.mid.frequency.value = 200;
     sequence1.mid.gain.value = 1;
     sequence1.bass.gain.value = 1;
     sequence1.bass.frequency.value = 80;
@@ -44,8 +44,8 @@ function playNoteList(ac, sequence1, sequence2, noteList, noteListBass) {
     sequence2.bass.frequency.value = 80;
     sequence2.mid.gain.value = 0.2;
     sequence2.mid.frequency.value = 200;
-    sequence2.treble.gain.value = 0.2;
-    sequence2.treble.frequency.value = 400;
+    sequence2.treble.gain.value = 0;
+    sequence2.treble.frequency.value = 200;
 
     // Wave type
     //sequence1.waveType = 'square';
