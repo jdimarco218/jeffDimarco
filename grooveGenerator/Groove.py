@@ -181,7 +181,7 @@ class Melody(object):
         #if currNote.octave == 0:
         if currNote.octave <= 3:
             rangeFloor = 8 - currNote.noteVal # skip that many notes off the bottom
-        maxOctave = 5
+        maxOctave = 4
         if currNote.octave >= maxOctave:
             rangeCeil = 17 - currNote.noteVal - 12*(abs(maxOctave-currNote.octave)) # skip that many notes off the top
 
