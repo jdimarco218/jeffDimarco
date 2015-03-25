@@ -1,9 +1,8 @@
-#!/usr/bin/env python
-
+#!/usr/bin/env python 
 import os
 from Groove import *
 
-myGroove = Groove("D")
+myGroove = Groove("E")
 #myGroove.key = "G"
 
 myGroove.genMelody()
@@ -31,7 +30,7 @@ for phrase in myGroove.melody.phraseList:
         if myGroove.key == "B":
             keyOffset = 6
         currList.append(keyOffset + note.octave*12+note.noteVal+Groove.scaleSteps[note.noteVal])
-        print "Adding: " + str(keyOffset + note.octave*12+Groove.scaleSteps[note.noteVal])
+        print "Adding: " + str(keyOffset + note.octave*12+Groove.scaleSteps[note.noteVal]) + " " + str(note.duration)
         #noteString += str(note.octave)
         #noteString += ","
 for i in range(len(currList)):

@@ -122,6 +122,8 @@ def ajax1(request):
         #myGroove.key = request.POST['client_response']
         myGroove.genMelody()
         currList = []
+        genList = []
+        durationMapToStr = {1.0:"q", 0.5:"h", 0.25:"q", 0.125:"e", 0.0625:"s"}
         for phrase in myGroove.melody.phraseList:
             for note in phrase.noteList:
                 keyOffset = 0
@@ -140,6 +142,8 @@ def ajax1(request):
                 if myGroove.key == "B":
                     keyOffset = 11
                 currList.append(keyOffset + note.octave*12+note.noteVal+Groove.scaleSteps[note.noteVal])
+                #for i in range(len(currList)):
+                genList.append(str(myGroove.allTMNotesList[currList[-1]]) + " " + durationMapToStr[note.duration]) 
         currBassList = []
         for phrase in myGroove.melody.phraseList:
             for note in phrase.underlyingList:
@@ -162,10 +166,9 @@ def ajax1(request):
                 currBassList.append(keyOffset + note.octave*12+note.noteVal+Groove.scaleSteps[note.noteVal])
                 #print "Adding: " + str(keyOffset + note.octave*12+Groove.scaleSteps[note.noteVal])
         response_dict = {}
-        genList = []
         genBassList = []
-        for i in range(len(currList)):
-            genList.append(str(myGroove.allTMNotesList[currList[i]]) + " e") 
+        #for i in range(len(currList)):
+        #    genList.append(str(myGroove.allTMNotesList[currList[i]]) + " e") 
         for i in range(len(currBassList)):
             genBassList.append(str(myGroove.allTMNotesList[currBassList[i]]) + " w") 
         #response_dict.update({'server_response_lead': ['lolz', 'lulz'] })

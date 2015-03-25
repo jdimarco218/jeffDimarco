@@ -22,13 +22,20 @@ code urls.
    <script type='text/javascript' src="{% static 'tinyMusic.min.js' %}"></script>
    <script type='text/javascript' src="{% static 'web_audio.js' %}"></script>
     <script type="text/javascript">
+
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    // create the audio context
+    var ac = typeof AudioContext !== 'undefined' ? new AudioContext : new webkitAudioContext;
+    var sequence1; 
+    var sequence2;
         $(document).ready(function() {
             $("#buttonAgain").click(function() {
-                playNoteList(serverNoteList, serverNoteListBass);
+                playNoteList(ac, sequence1, sequence2, serverNoteList, serverNoteListBass);
                 return true;
             });
             $("#buttonStop").click(function() {
-                playNoteList(serverNoteList, serverNoteListBass);
+                sequence1.stop();
+                sequence2.stop();
                 return true;
             });
             var serverNoteList = [];
@@ -47,7 +54,7 @@ code urls.
                                 serverNoteList = [];
                                 serverNoteListBass = [];
                                 console.log("input_string" + input_string);
-                                $('#result').append( 'Server Response: ' + json.server_response_lead);
+                                $('#result').append( 'Server Response: ' + json.server_response_lead + '<br>');
                                 //var serverNoteList = [];
                                 for (var i = 0; i < json.server_response_lead.length; i++ ) {
                                     serverNoteList.push(json.server_response_lead[i]);
@@ -57,7 +64,7 @@ code urls.
                                     serverNoteListBass.push(json.server_response_bass[i]);
                                     console.log(serverNoteListBass[i]);
                                 }
-                                playNoteList(serverNoteList, serverNoteListBass);
+                                playNoteList(ac, sequence1, sequence2, serverNoteList, serverNoteListBass);
                             },
                             //success : function(json) {
                             //    $('#result').append( 'Server Response: ' + json.server_response_lead);

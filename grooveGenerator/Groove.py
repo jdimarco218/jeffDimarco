@@ -35,6 +35,8 @@ class Groove(object):
 
     allFreqsList = ["%-48", "%-47", "%-46", "%-45", "%-44", "%-43", "%-42", "%-41", "%-40", "%-39", "%-38", "%-37", "%-36", "%-35", "%-34", "%-33", "%-32", "%-31", "%-30", "%-29", "%-28", "%-27", "%-26", "%-25", "%-24", "%-23", "%-22", "%-21", "%-20", "%-19", "%-18", "%-17", "%-16", "%-15", "%-14", "%-13", "%-12", "%-11", "%-10", "%-9", "%-8", "%-7", "%-6", "%-5", "%-4", "%-3", "%-2", "%-1","%+0", "%+1", "%+2", "%+3", "%+4", "%+5", "%+6", "%+7", "%+8", "%+9", "%+10", "%+11", "%+12", "%+13", "%+14", "%+15", "%+16", "%+17", "%+18", "%+19", "%+20", "%+21", "%+22", "%+23", "%+24", "%+25", "%+26", "%+27", "%+28", "%+29", "%+30", "%+31", "%+32", "%+33", "%+34", "%+35", "%+36", "%+37", "%+38", "%+39", "%+40", "%+41", "%+42", "%+43", "%+44", "%+45", "%+46", "%+47", "%+48"]
 
+    durationMapToStr = {1.0:"w", 0.5:"h", 0.25:"q", 0.125:"e", 0.0625:"s"}
+
     allNotesFreqsDict = {}
 
     def __init__(self, key="C"):
@@ -52,16 +54,54 @@ class Groove(object):
         for currPhrase in range(self.phraseCount):
             self.genPhrase(currPhrase)
 
-    def genPhrase(self, phrase):
+    def genPhrase(self, phraseNum):
         """ Generate melodic notes """
-        for i in range(8):
-            if i == 0:
+        duration = 0
+        choiceDuration = 0.25
+        phraseDuration = 1.0
+        while duration < phraseDuration:
+        #for i in range(8):
+            #if i == 0 and phraseNum == 0:
+            if duration == 0 and phraseNum == 0:
                 """ Gen initial note """
-                self.melody.phraseList[phrase].noteList.append(Note(0))
+                self.melody.phraseList[phraseNum].noteList.append(Note(0))
+                duration += self.melody.phraseList[phraseNum].noteList[0].duration
             else:
                 """ Gen next note """
-                currNote = self.melody.phraseList[phrase].noteList[i-1]
-                self.melody.phraseList[phrase].noteList.append(self.melody.genNextNote(currNote))
+                if self.melody.phraseList[phraseNum].noteList:
+                    currNote = self.melody.phraseList[phraseNum].noteList[-1]
+                    # TODO figure out more normal way to calc this lol
+                    # TODO use previous duration as a factor???
+                    # Set weights for duration
+                    durationWeights = [  2,   4,   10,    10,      1]
+                    durationVals =    [1.0, 0.5, 0.25, 0.125, 0.0625]
+                    #                 whol, haf, quar, eight, sixtee, thirty2
+                    # Remove weights that will not fit into remaining phrase
+                    for i in range(len(durationVals)):
+                        if durationVals[i] > (phraseDuration - duration):
+                            durationWeights[i] = 0
+                    # TODO
+                    if DEBUG:
+                        print "Currently assigned duration: " + str(duration)
+                        for currDuration in durationWeights: 
+                            print str(currDuration ) + ", "
+                        print ""
+                    # Pick a duration based on the weights
+                    wSum = sum(x for x in durationWeights)
+                    choiceVal = random.uniform(0, wSum)
+                    checkVal = 0
+                    for i in range(len(durationWeights)): 
+                        checkVal += durationWeights[i] # weight index
+                        if checkVal > choiceVal:
+                            break; # we use the current weight
+                    # HERE 
+                    choiceDuration = durationVals[i]
+                else:
+                    # If this is the first note of the phrase, use last phrase's last note
+                    currNote = self.melody.phraseList[phraseNum-1].noteList[-1]
+                self.melody.phraseList[phraseNum].noteList.append(self.melody.genNextNote(currNote))
+                self.melody.phraseList[phraseNum].noteList[-1].duration = choiceDuration
+                duration += self.melody.phraseList[phraseNum].noteList[-1].duration
         """ Generate underlying """
         startingOctave = self.melody.phraseList[0].noteList[0].octave # Use the very first note's octave as a reference
         if startingOctave >= 2: # Get lower if possible, TODO it might sound bad if not going lower
@@ -69,16 +109,16 @@ class Groove(object):
         else:
             startingOctave = 0
         # Get current chord for this phrase
-        self.melody.phraseList[phrase].underlyingList.append(Note(self.chordProgression[phrase], startingOctave)) 
+        self.melody.phraseList[phraseNum].underlyingList.append(Note(self.chordProgression[phraseNum], startingOctave)) 
 
 
     def printGroove(self):
         print "### Groove ###\n"
         for i in range(len(self.melody.phraseList)):
             print "  --Phrase " + str(i) + "--"
-            """ Print each note in the current phrase, melody """
+            """ Print each note in the current phrase with duration, melody """
             for note in self.melody.phraseList[i].noteList:
-                print str(note.noteVal) + "." + str(note.octave) + " ",
+                print str(note.noteVal) + "." + str(note.octave) + str(self.durationMapToStr[note.duration]) + " ",
             print ""
             """ Print each note in the current phrase, underlying """
             for note in self.melody.phraseList[i].underlyingList:
@@ -91,10 +131,11 @@ class Note(object):
     " TODO
     """
 
-    def __init__(self, noteVal, octave=4):
+    def __init__(self, noteVal, octave=4, duration=0.25):
         """ TODO """
         self.noteVal = noteVal
         self.octave = octave
+        self.duration = duration 
 
     def __str__(self):
         print str(self.noteVal)
@@ -137,6 +178,8 @@ class Melody(object):
         rangeCeil  = 17 # Two octaves plus current note
         if currNote.octave == 0:
             rangeFloor = 8 - currNote.noteVal # skip that many notes off the bottom
+        if currNote.octave == 7:
+            rangeCeil = 17 - currNote.noteVal # skip that many notes off the bottom
 
         for i in range(rangeFloor, rangeCeil):
 
