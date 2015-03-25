@@ -178,10 +178,12 @@ class Melody(object):
         proximityWeightFactor = 1.8 
         rangeFloor = 0
         rangeCeil  = 17 # Two octaves plus current note
-        if currNote.octave == 0:
+        #if currNote.octave == 0:
+        if currNote.octave <= 3:
             rangeFloor = 8 - currNote.noteVal # skip that many notes off the bottom
-        if currNote.octave >= 6:
-            rangeCeil = 17 - currNote.noteVal - 12*(abs(6-currNote.octave)) # skip that many notes off the top
+        maxOctave = 5
+        if currNote.octave >= maxOctave:
+            rangeCeil = 17 - currNote.noteVal - 12*(abs(maxOctave-currNote.octave)) # skip that many notes off the top
 
         for i in range(rangeFloor, rangeCeil):
 
