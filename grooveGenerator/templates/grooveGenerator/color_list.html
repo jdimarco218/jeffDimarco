@@ -42,14 +42,25 @@ code urls.
             var serverNoteListBass = [];
             $("#button").click(function() {
                     var input_string = $("#forminput").val();
+                    var chord_input_val_0 = $("#chord_input_0").val()-1;
+                    var chord_input_val_1 = $("#chord_input_1").val()-1;
+                    var chord_input_val_2 = $("#chord_input_2").val()-1;
+                    var chord_input_val_3 = $("#chord_input_3").val()-1;
+                    //var input_chord_progression = "5"
+                    //var input_chord_progression = String($("#chord_progression_input").val());
+                    //var input_chord_progression = [0, 4, 3, 4];
                     $.ajax({
                         url : "/grooveGenerator/ajax1_json", 
                         type : "POST",
                         dataType: "json", 
                         data : {
                             client_response : input_string,
+                            client_chord_0 : chord_input_val_0,
+                            client_chord_1 : chord_input_val_1,
+                            client_chord_2 : chord_input_val_2,
+                            client_chord_3 : chord_input_val_3,
                             csrfmiddlewaretoken: '{{ csrf_token }}'
-                            },
+                             },
                             success : function(json) {
                                 serverNoteList = [];
                                 serverNoteListBass = [];
@@ -80,6 +91,10 @@ code urls.
     <form method="post" name="example form" >
         {% csrf_token %}
         <input name="example" id="forminput" type="text">
+        <input name="chord0" id="chord_input_0" type="text">
+        <input name="chord1" id="chord_input_1" type="text">
+        <input name="chord2" id="chord_input_2" type="text">
+        <input name="chord3" id="chord_input_3" type="text">
         <input id="button" type="button" value="send to server"></input>
         <input id="buttonAgain" type="button" value="Play again :D"></input>
         <input id="buttonStop" type="button" value="STOP THAT SHIT!"></input>

@@ -11,7 +11,7 @@ class Groove(object):
     """
     
     # number of steps skipped for this note on the scale
-    scaleSteps = [0, 1, 2, 2, 3, 4, 5, 5]
+    scaleSteps = [0, 1, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9, 10, 10]
     # whole, whole, half, whole, whole, whole, half
 
     allNotesList = ["C0","CsDf0","D0","DsEf0","E0","F0","FsGf0","G0","GsAf0","A0","AsBf0","B0",
@@ -39,7 +39,7 @@ class Groove(object):
 
     allNotesFreqsDict = {}
 
-    def __init__(self, key="C"):
+    def __init__(self, key="C", chordProgression=[0,3,4,3]):
         """ TODO """
         for i in range(len(self.allNotesList)):
             self.allNotesFreqsDict[self.allNotesList[i]] = self.allFreqsList[i]
@@ -47,7 +47,7 @@ class Groove(object):
         self.bpm = 80
         self.range = 2
         self.phraseCount = 4
-        self.chordProgression = [0, 3, 4, 3] # 1-4-5-4 default
+        self.chordProgression = chordProgression # 1-4-5-4 default
         self.melody = Melody(self.phraseCount)
 
     def genMelody(self):
@@ -73,7 +73,7 @@ class Groove(object):
                     # TODO figure out more normal way to calc this lol
                     # TODO use previous duration as a factor???
                     # Set weights for duration
-                    durationWeights = [  2,   4,   10,    10,      1]
+                    durationWeights = [  2,   4,   10,    10,      0]
                     durationVals =    [1.0, 0.5, 0.25, 0.125, 0.0625]
                     #                 whol, haf, quar, eight, sixtee, thirty2
                     # Remove weights that will not fit into remaining phrase
@@ -181,7 +181,7 @@ class Melody(object):
         #if currNote.octave == 0:
         if currNote.octave <= 3:
             rangeFloor = 8 - currNote.noteVal # skip that many notes off the bottom
-        maxOctave = 4
+        maxOctave = 5
         if currNote.octave >= maxOctave:
             rangeCeil = 17 - currNote.noteVal - 12*(abs(maxOctave-currNote.octave)) # skip that many notes off the top
 

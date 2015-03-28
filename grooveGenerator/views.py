@@ -118,7 +118,25 @@ def ajax1(request):
         #response_dict = {}
         #response_dict.update({'server_response': y }) 
         #return HttpResponse(json.dumps(response_dict), content_type='application/json') 
-        myGroove = Groove(request.POST['client_response'])
+        #myGroove = Groove(request.POST['client_response'], request.POST['client_chord_progression'])
+        #myGroove = Groove(request.POST['client_response'])
+        #print str(request.POST.getlist('client_chord_progression[]'))
+        if request.POST.has_key('client_chord_3'):
+            print "we have chords!"
+        else:
+            print "we have no chords WTF m8"
+
+        """ Build chord progression list """
+        inputChordList = []
+        inputChordList.append(int(request.POST['client_chord_0']))
+        inputChordList.append(int(request.POST['client_chord_1']))
+        inputChordList.append(int(request.POST['client_chord_2']))
+        inputChordList.append(int(request.POST['client_chord_3']))
+        if inputChordList:
+            print request.POST['client_response']
+            print inputChordList
+        myGroove = Groove(request.POST['client_response'], inputChordList)
+        #myGroove = Groove(request.POST['client_response'])
         #myGroove.key = request.POST['client_response']
         myGroove.genMelody()
         currList = []
