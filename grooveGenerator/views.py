@@ -128,10 +128,23 @@ def ajax1(request):
 
         """ Build chord progression list """
         inputChordList = []
-        inputChordList.append(int(request.POST['client_chord_0']))
-        inputChordList.append(int(request.POST['client_chord_1']))
-        inputChordList.append(int(request.POST['client_chord_2']))
-        inputChordList.append(int(request.POST['client_chord_3']))
+        if request.POST.has_key('client_chord_0'):
+            inputChordList.append(int(request.POST['client_chord_0']))
+        else:
+            inputChordList.append(0)
+        if request.POST.has_key('client_chord_1'):
+            inputChordList.append(int(request.POST['client_chord_1']))
+        else:
+            inputChordList.append(0)
+        if request.POST.has_key('client_chord_2'):
+            inputChordList.append(int(request.POST['client_chord_2']))
+        else:
+            inputChordList.append(0)
+        if request.POST.has_key('client_chord_3'):
+            inputChordList.append(int(request.POST['client_chord_3']))
+        else:
+            inputChordList.append(0)
+
         if inputChordList:
             print request.POST['client_response']
             print inputChordList
