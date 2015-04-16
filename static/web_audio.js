@@ -37,23 +37,23 @@ function playNoteList(ac, noteList, noteListBass) {
     sequence1.smoothing = 0.4;
     
     // adjust the levels so the bass and harmony aren't too loud
-    sequence0.gain.gain.value = 0.5;
-    sequence1.gain.gain.value = 0.3;
+    sequence0.gain.gain.value = 0.6;
+    sequence1.gain.gain.value = 0.4;
     
     // apply EQ settings
-    sequence0.treble.frequency.value = 200;
-    sequence0.treble.gain.value = 0.8;
-    sequence0.mid.frequency.value = 200;
-    sequence0.mid.gain.value = 1;
-    sequence0.bass.gain.value = 1;
-    sequence0.bass.frequency.value = 80;
-    sequence1.mid.gain.value = 0.2;
-    sequence1.bass.gain.value = 0.7;
-    sequence1.bass.frequency.value = 80;
-    sequence1.mid.gain.value = 0.2;
-    sequence1.mid.frequency.value = 200;
-    sequence1.treble.gain.value = 0;
-    sequence1.treble.frequency.value = 200;
+    //sequence0.treble.frequency.value = 200;
+    //sequence0.treble.gain.value = 0.8;
+    //sequence0.mid.frequency.value = 200;
+    //sequence0.mid.gain.value = 1;
+    //sequence0.bass.gain.value = 1;
+    //sequence0.bass.frequency.value = 80;
+    //sequence1.mid.gain.value = 0.2;
+    //sequence1.bass.gain.value = 0.7;
+    //sequence1.bass.frequency.value = 80;
+    //sequence1.mid.gain.value = 0.2;
+    //sequence1.mid.frequency.value = 200;
+    //sequence1.treble.gain.value = 0;
+    //sequence1.treble.frequency.value = 200;
 
     // Wave type
     //sequence0.waveType = 'square';

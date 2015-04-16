@@ -6,6 +6,20 @@ class Groove(object):
     """
     " Holds the entire groove.
     "
+    " Design:
+    "  The next note is chosen with a random weighting system.  There are
+    "  multiple weightings used. Most weightings are stochastic and can work
+    "  without a history of the preceding melody notes (minimal exceptions).
+    "  Scale - The 1,3,5 of the current harmony chord are weighted higher
+    "  in the melody
+    "  Proximity - Closer notes to the current note is weighted higher
+    "  while the current note has a unique weighting (default low).
+    "  Starting Range - Notes closer to the starting octave roote note are
+    "  weighted slightly higher.
+    "  1 Jump - 
+    "  6 Jump - 
+    "  Sequence offest - 
+    "  
     " Attributes:
     "     TODO
     """
@@ -39,6 +53,8 @@ class Groove(object):
 
     allNotesFreqsDict = {}
 
+    phraseDuration = 1.0
+
     def __init__(self, key="C", chordProgression=[0,3,4,3]):
         """ TODO """
         for i in range(len(self.allNotesList)):
@@ -51,15 +67,24 @@ class Groove(object):
         self.melody = Melody(self.phraseCount)
 
     def genMelody(self):
+        """ Create the underlying before the melodies over top of them """
+        #startingOctave = self.melody.phraseList[0].noteList[0].octave # Use the very first note's octave as a reference
+        #if startingOctave >= 2: # Get lower if possible, TODO it might sound bad if not going lower
+        #    startingOctave -= 2
+        #else:
+        #    startingOctave = 0
         for currPhrase in range(self.phraseCount):
-            self.genPhrase(currPhrase)
+            # Get current chord for this phrase
+            self.melody.phraseList[currPhrase].underlyingList.append(Note(self.chordProgression[currPhrase], 0)) 
+            #self.melody.phraseList[currPhrase].underlyingList.append(Note(self.chordProgression[currPhrase], startingOctave)) 
+        for currPhrase in range(self.phraseCount):
+            self.genPhraseMelody(currPhrase)
 
-    def genPhrase(self, phraseNum):
+    def genPhraseMelody(self, phraseNum):
         """ Generate melodic notes """
         duration = 0
         choiceDuration = 0.25
-        phraseDuration = 1.0
-        while duration < phraseDuration:
+        while duration < Groove.phraseDuration:
         #for i in range(8):
             #if i == 0 and phraseNum == 0:
             if duration == 0 and phraseNum == 0:
@@ -74,11 +99,11 @@ class Groove(object):
                     # TODO use previous duration as a factor???
                     # Set weights for duration
                     durationWeights = [  2,   4,   10,    10,      0]
-                    durationVals =    [1.0, 0.5, 0.25, 0.125, 0.0625]
                     #                 whol, haf, quar, eight, sixtee, thirty2
+                    durationVals =    [1.0, 0.5, 0.25, 0.125, 0.0625]
                     # Remove weights that will not fit into remaining phrase
                     for i in range(len(durationVals)):
-                        if durationVals[i] > (phraseDuration - duration):
+                        if durationVals[i] > (Groove.phraseDuration - duration):
                             durationWeights[i] = 0
                     # TODO
                     if DEBUG:
@@ -99,17 +124,12 @@ class Groove(object):
                 else:
                     # If this is the first note of the phrase, use last phrase's last note
                     currNote = self.melody.phraseList[phraseNum-1].noteList[-1]
-                self.melody.phraseList[phraseNum].noteList.append(self.melody.genNextNote(currNote))
+                isLastNoteInPhrase = False
+                if duration + choiceDuration >= Groove.phraseDuration:
+                    isLastNoteInPhrase = True
+                self.melody.phraseList[phraseNum].noteList.append(self.melody.genNextNote(currNote, phraseNum, isLastNoteInPhrase))
                 self.melody.phraseList[phraseNum].noteList[-1].duration = choiceDuration
                 duration += self.melody.phraseList[phraseNum].noteList[-1].duration
-        """ Generate underlying """
-        startingOctave = self.melody.phraseList[0].noteList[0].octave # Use the very first note's octave as a reference
-        if startingOctave >= 2: # Get lower if possible, TODO it might sound bad if not going lower
-            startingOctave -= 2
-        else:
-            startingOctave = 0
-        # Get current chord for this phrase
-        self.melody.phraseList[phraseNum].underlyingList.append(Note(self.chordProgression[phraseNum], startingOctave)) 
 
 
     def printGroove(self):
@@ -151,9 +171,9 @@ class Melody(object):
             self.phraseList.append(Phrase(i))
         """ TODO """
 
-    def genNextNote(self, currNote):
+    def genNextNote(self, currNote, phraseNum, isLastNoteInPhrase = False):
         weights = {}
-        self.genNoteRange(weights, currNote)
+        self.genNoteWeights(weights, currNote, phraseNum, isLastNoteInPhrase)
         if DEBUG:
             for currList in weights.values():
                 print "Note: " + str(currList[0].noteVal) + "." + str(currList[0].octave) + "  w: " + str(currList[1])
@@ -168,7 +188,7 @@ class Melody(object):
                 break; # we use the current weight
         return weight[1][0] # Note index
 
-    def genNoteRange(self, weights, currNote):
+    def genNoteWeights(self, weights, currNote, phraseNum, isLastNoteInPhrase):
 
         """ Generate a range one octave down and up """
         baseWeightOffset = 3 # Used to normalize weights across types
@@ -176,6 +196,8 @@ class Melody(object):
         baseDistanceFactor = 3.25
         proximityWeightOffset = 10
         proximityWeightFactor = 1.8 
+        sixJumpWeightOffset = 2
+        lastNoteJumpWeightOffset = 2
         rangeFloor = 0
         rangeCeil  = 17 # Two octaves plus current note
         #if currNote.octave == 0:
@@ -215,7 +237,21 @@ class Melody(object):
             """ Weigh closer to the root slightly higher """
             nextProximityWeight = proximityWeightOffset - proximityWeightFactor * (abs(nextOctave - 4)) # 4 is root octave
 
-            weights[i] = [Note(nextNoteVal, nextOctave), nextDistanceWeight + nextScaleWeight + nextProximityWeight] 
+            """ Weigh the six note jump slightly higher """
+            sixJumpWeight = 0
+            if abs(i - currNote.noteVal) == 6:
+                sixJumpWeight = sixJumpWeightOffset
+
+            """ Weigh the last note jumping the next root slightly higher """
+            lastNoteJumpWeight = 0
+            if isLastNoteInPhrase:
+                nextPhraseRoot = 0
+                if phraseNum >= 0 and phraseNum < len(self.phraseList):
+                    nextPhraseRoot = phraseNum
+                if abs(self.phraseList[nextPhraseRoot].noteList[0].noteVal - nextNoteVal) == 1:
+                    lastNoteJumpWeight = lastNoteJumpWeightOffset
+
+            weights[i] = [Note(nextNoteVal, nextOctave), nextDistanceWeight + nextScaleWeight + nextProximityWeight + sixJumpWeight + lastNoteJumpWeight] 
 
 class Phrase(object):
     """
