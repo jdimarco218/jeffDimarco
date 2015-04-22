@@ -128,6 +128,7 @@ def ajax1(request):
 
         """ Build chord progression list """
         inputChordList = []
+        attributeList = []
         if request.POST.has_key('client_chord_0'):
             inputChordList.append(int(request.POST['client_chord_0']))
         else:
@@ -144,11 +145,36 @@ def ajax1(request):
             inputChordList.append(int(request.POST['client_chord_3']))
         else:
             inputChordList.append(0)
+        # Build attributeList
+        if request.POST.has_key('client_tonic_notes_weight') and int(request.POST['client_tonic_notes_weight']) != -1:
+            attributeList.append(int(request.POST['client_tonic_notes_weight']))
+        else:
+            attributeList.append("")
+        if request.POST.has_key('client_distance_offset') and int(request.POST['client_distance_offset']) != -1:
+            attributeList.append(int(request.POST['client_distance_offset']))
+        else:
+            attributeList.append("")
+        if request.POST.has_key('client_distance_factor') and int(request.POST['client_distance_factor']) != -1:
+            attributeList.append(int(request.POST['client_distance_factor']))
+        else:
+            attributeList.append("")
+        if request.POST.has_key('client_proximity_offset') and int(request.POST['client_proximity_offset']) != -1:
+            attributeList.append(int(request.POST['client_proximity_offset']))
+        else:
+            attributeList.append("")
+        if request.POST.has_key('client_proximity_factor') and int(request.POST['client_proximity_factor']) != -1:
+            attributeList.append(int(request.POST['client_proximity_factor']))
+        else:
+            attributeList.append("")
+        if request.POST.has_key('client_sixth_weight') and int(request.POST['client_sixth_weight']) != -1:
+            attributeList.append(int(request.POST['client_sixth_weight']))
+        else:
+            attributeList.append("")
 
         if inputChordList:
             print request.POST['client_response']
             print inputChordList
-        myGroove = Groove(request.POST['client_response'], inputChordList)
+        myGroove = Groove(attributeList, request.POST['client_response'], inputChordList)
         #myGroove = Groove(request.POST['client_response'])
         #myGroove.key = request.POST['client_response']
         myGroove.genMelody()

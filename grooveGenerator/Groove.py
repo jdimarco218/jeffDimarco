@@ -55,7 +55,7 @@ class Groove(object):
 
     phraseDuration = 1.0
 
-    def __init__(self, key="C", chordProgression=[0,3,4,3]):
+    def __init__(self, attributeList, key="C", chordProgression=[0,3,4,3]):#bwo=3, bdo=2, bdf=3.25, pwo=10, pwf=1.8, sjwo=2, lnjwo=2, rf=0, rc=17):
         """ TODO """
         for i in range(len(self.allNotesList)):
             self.allNotesFreqsDict[self.allNotesList[i]] = self.allFreqsList[i]
@@ -63,20 +63,53 @@ class Groove(object):
         self.bpm = 80
         self.range = 2
         self.phraseCount = 4
+        # Input parameters
         self.chordProgression = chordProgression # 1-4-5-4 default
-        self.melody = Melody(self.phraseCount)
+        # Determine which attributes are present otherwise use default values
+        receivedAttributeList = []
+        if len(attributeList) > 0 and attributeList[0] != "":
+            receivedAttributeList.append(attributeList[0])
+        else:
+            receivedAttributeList.append(3) # Default value
+        if len(attributeList) > 1 and attributeList[1] != "":
+            receivedAttributeList.append(attributeList[1])
+        else:
+            receivedAttributeList.append(2) # Default value
+        if len(attributeList) > 2 and attributeList[2] != "":
+            receivedAttributeList.append(attributeList[2])
+        else:
+            receivedAttributeList.append(3.25) # Default value
+        if len(attributeList) > 3 and attributeList[3] != "":
+            receivedAttributeList.append(attributeList[3])
+        else:
+            receivedAttributeList.append(10) # Default value
+        if len(attributeList) > 4 and attributeList[4] != "":
+            receivedAttributeList.append(attributeList[4])
+        else:
+            receivedAttributeList.append(1.8) # Default value
+        if len(attributeList) > 5 and attributeList[5] != "":
+            receivedAttributeList.append(attributeList[5])
+        else:
+            receivedAttributeList.append(2) # Default value
+
+        #self.baseWeightOffset = bwo # Used to normalize weights across types
+        #self.baseDistanceOffset = bdo
+        #self.baseDistanceFactor = bdf
+        #self.proximityWeightOffset = pwo
+        #self.proximityWeightFactor = pwf 
+        #self.sixJumpWeightOffset = sjwo
+        self.lastNoteJumpWeightOffset = 2
+        self.rangeFloor = 0
+        self.rangeCeil  = 17 # Two octaves plus current note
+        # Generate!
+        self.melody = Melody(self.phraseCount, receivedAttributeList[0], receivedAttributeList[1], receivedAttributeList[2], receivedAttributeList[3], receivedAttributeList[4], receivedAttributeList[5], self.lastNoteJumpWeightOffset, self.rangeFloor, self.rangeCeil)
 
     def genMelody(self):
         """ Create the underlying before the melodies over top of them """
-        #startingOctave = self.melody.phraseList[0].noteList[0].octave # Use the very first note's octave as a reference
-        #if startingOctave >= 2: # Get lower if possible, TODO it might sound bad if not going lower
-        #    startingOctave -= 2
-        #else:
-        #    startingOctave = 0
+        underlyingOffset = 2
         for currPhrase in range(self.phraseCount):
-            # Get current chord for this phrase
-            self.melody.phraseList[currPhrase].underlyingList.append(Note(self.chordProgression[currPhrase], 0)) 
-            #self.melody.phraseList[currPhrase].underlyingList.append(Note(self.chordProgression[currPhrase], startingOctave)) 
+            # Get current chord for this phrase and offset it
+            self.melody.phraseList[currPhrase].underlyingList.append(Note(self.chordProgression[currPhrase], underlyingOffset)) 
         for currPhrase in range(self.phraseCount):
             self.genPhraseMelody(currPhrase)
 
@@ -165,11 +198,20 @@ class Melody(object):
     " TODO
     """
 
-    def __init__(self, phraseCount):
+    def __init__(self, phraseCount, bwo, bdo, bdf, pwo, pwf, sjwo, lnjwo, rf, rc):
         self.phraseList = []
         for i in range(phraseCount):
             self.phraseList.append(Phrase(i))
         """ TODO """
+        self.baseWeightOffset = bwo # Used to normalize weights across types
+        self.baseDistanceOffset = bdo
+        self.baseDistanceFactor = bdf
+        self.proximityWeightOffset = pwo
+        self.proximityWeightFactor = pwf 
+        self.sixJumpWeightOffset = sjwo
+        self.lastNoteJumpWeightOffset = lnjwo
+        self.rangeFloor = rf
+        self.rangeCeil  = rc
 
     def genNextNote(self, currNote, phraseNum, isLastNoteInPhrase = False):
         weights = {}
@@ -191,15 +233,15 @@ class Melody(object):
     def genNoteWeights(self, weights, currNote, phraseNum, isLastNoteInPhrase):
 
         """ Generate a range one octave down and up """
-        baseWeightOffset = 3 # Used to normalize weights across types
-        baseDistanceOffset = 2
-        baseDistanceFactor = 3.25
-        proximityWeightOffset = 10
-        proximityWeightFactor = 1.8 
-        sixJumpWeightOffset = 2
-        lastNoteJumpWeightOffset = 2
-        rangeFloor = 0
-        rangeCeil  = 17 # Two octaves plus current note
+        baseWeightOffset = self.baseWeightOffset # Used to normalize weights across types
+        baseDistanceOffset = self.baseDistanceOffset
+        baseDistanceFactor = self.baseDistanceFactor
+        proximityWeightOffset = self.proximityWeightOffset 
+        proximityWeightFactor = self.proximityWeightFactor
+        sixJumpWeightOffset = self.sixJumpWeightOffset
+        lastNoteJumpWeightOffset = self.lastNoteJumpWeightOffset
+        rangeFloor = self.rangeFloor
+        rangeCeil  = self.rangeCeil
         #if currNote.octave == 0:
         if currNote.octave <= 3:
             rangeFloor = 8 - currNote.noteVal # skip that many notes off the bottom
@@ -239,7 +281,7 @@ class Melody(object):
 
             """ Weigh the six note jump slightly higher """
             sixJumpWeight = 0
-            if abs(i - currNote.noteVal) == 6:
+            if abs( (nextOctave*8+nextNoteVal) - (currNote.octave*8+currNote.noteVal)) == 6:
                 sixJumpWeight = sixJumpWeightOffset
 
             """ Weigh the last note jumping the next root slightly higher """

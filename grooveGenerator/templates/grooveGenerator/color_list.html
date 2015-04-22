@@ -10,7 +10,6 @@
     <body>
    <script type='text/javascript' src="{% static 'jquery-1.11.1.min.js' %}"></script>
    <script type='text/javascript' src="{% static 'tinyMusic.min.js' %}"></script>
-   <script type='text/javascript' src="{% static 'infield.js' %}"></script>
    <script type='text/javascript' src="{% static 'web_audio.js' %}"></script>
     <script type="text/javascript">
 
@@ -29,27 +28,39 @@
             var serverNoteList = [];
             var serverNoteListBass = [];
             $("#submit").click(function() {
-                    var input_string = $("#key").val() == "" ? "C" : $("#key").val();
                     var chord_input_val_0 = $("#chord_input_0").val() == "" ? 0 : $("#chord_input_0").val();
                     var chord_input_val_1 = $("#chord_input_1").val() == "" ? 3 : $("#chord_input_1").val();
                     var chord_input_val_2 = $("#chord_input_2").val() == "" ? 4 : $("#chord_input_2").val();
                     var chord_input_val_3 = $("#chord_input_3").val() == "" ? 3 : $("#chord_input_3").val();
+                    var input_key = $("#key").val() == "" ? "C" : $("#key").val();
+                    var input_tonic_notes_weight = $("#tonic_notes_weight").val() == "" ? -1 : $("#tonic_notes_weight").val(); 
+                    var input_proximity_offset = $("#proximity_offset").val() == "" ? -1 : $("#tonic_proximity_offset").val(); 
+                    var input_proximity_factor = $("#proximity_factor").val() == "" ? -1 : $("#proximity_factor").val(); 
+                    var input_distance_offset = $("#distance_offset").val() == "" ? -1 : $("#distance_offset").val(); 
+                    var input_distance_factor = $("#distance_factor").val() == "" ? -1 : $("#distance_factor").val(); 
+                    var input_sixth_weight = $("#sixth_weight").val() == "" ? -1 : $("#sixth_weight").val(); 
                     $.ajax({
                         url : "/grooveGenerator/ajax1_json", 
                         type : "POST",
                         dataType: "json", 
                         data : {
-                            client_response : input_string,
+                            client_response : input_key,
                             client_chord_0 : chord_input_val_0,
                             client_chord_1 : chord_input_val_1,
                             client_chord_2 : chord_input_val_2,
                             client_chord_3 : chord_input_val_3,
+                            client_tonic_notes_weight : input_tonic_notes_weight,
+                            client_proximity_offset : input_proximity_offset,
+                            client_proximity_factor : input_proximity_factor,
+                            client_distance_offset : input_distance_offset,
+                            client_distance_factor : input_distance_factor,
+                            client_sixth_weight : input_sixth_weight,
                             csrfmiddlewaretoken: '{{ csrf_token }}'
                             },
                             success : function(json) {
                                 serverNoteList = [];
                                 serverNoteListBass = [];
-                                console.log("input_string" + input_string);
+                                console.log("input_key" + input_key);
                                 $('#result').text( 'Server Response: ' + json.server_response_lead);
                                 for (var i = 0; i < json.server_response_lead.length; i++ ) {
                                     serverNoteList.push(json.server_response_lead[i]);
@@ -139,21 +150,47 @@
                         <label for="key">Key</label>
                         <input type="text" name="key" id="key" class="input" size="1"></input>
                     </span>
-
                 </p>
             </div>
             <div style="float:left; margin:0 10px 10px 0;">
                 <p> <span class="infield-label">
-                        <label for="weight1">Weight 1</label>
-                        <input type="text" name="weight1" id="weight1" class="input" size="5"></input>
+                        <label for="tonic_notes_weight">Tonic Notes Weight</label>
+                        <input type="text" name="tonic_notes_weight" id="tonic_notes_weight" class="input" size="14"></input>
                     </span>
-
                 </p>
             </div>
-            <div style="clear:left; float:left; margin:0;padding:0;">
+            <div style="float:left; margin:0 10px 10px 0;">
                 <p> <span class="infield-label">
-                        <label for="weight2">Weight 2</label>
-                        <input type="text" name="weight2" id="weight2" class="input" size="5"></input>
+                        <label for="proximity_offset">Proximity Offset</label>
+                        <input type="text" name="proximity_offset" id="proximity_offset" class="input" size="14"></input>
+                    </span>
+                </p>
+            </div>
+            <div style="float:left; margin:0 10px 10px 0;">
+                <p> <span class="infield-label">
+                        <label for="proximity_factor">Proximity Factor</label>
+                        <input type="text" name="proximity_factor" id="proximity_factor" class="input" size="14"></input>
+                    </span>
+                </p>
+            </div>
+            <div style="clear:left; float:left; margin:0 10px 10px 0;padding:0;">
+                <p> <span class="infield-label">
+                        <label for="distance_offset">Distance Offset</label>
+                        <input type="text" name="distance_offset" id="distance_offset" class="input" size="10"></input>
+                    </span>
+                </p>
+            </div>
+            <div style="float:left; margin:0 10px 10px 0;">
+                <p> <span class="infield-label">
+                        <label for="distance_factor">Distance Factor</label>
+                        <input type="text" name="distance_factor" id="distance_factor" class="input" size="10"></input>
+                    </span>
+                </p>
+            </div>
+            <div style="float:left; margin:0 10px 10px 0;">
+                <p> <span class="infield-label">
+                        <label for="sixth_weight">Sixth Weight</label>
+                        <input type="text" name="sixth_weight" id="sixth_weight" class="input" size="10"></input>
                     </span>
                 </p>
             </div>
@@ -167,6 +204,7 @@
     </form>
     <br>
     <div style="text-align: center;" id="result">
+   <script type='text/javascript' src="{% static 'jquery.infieldLabel.js' %}"></script>
     
 
 </body></html>
